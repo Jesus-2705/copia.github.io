@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Espermatogénesis</title>
+    <style>
+        /* Estilos combinados y mejorados para un diseño moderno y responsivo */
+        body {
+            background: linear-gradient(45deg, rgba(152, 29, 151, 1) 40%, rgba(41, 41, 41, 1) 65%, rgba(252, 176, 69, 1) 80%);
+            color: #333;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .titulo-con-imagenes {
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            text-align: center;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+        
+        /* Ajuste para pantallas de escritorio */
+        @media (min-width: 769px) {
+            .titulo-con-imagenes {
+                flex-direction: row;
+                gap: 250px;
+            }
+        }
+
+        .titulo-con-imagenes img {
+            width: 120px;
+            height: auto;
+            border-radius: 15px;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            color: #2c3e50;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+
+        h2, h3 {
+            font-size: 1.5em;
+            color: #34495e;
+            margin: 5px 0;
+        }
+
+        #info {
+            max-width: 800px;
+            width: 90%;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            padding: 20px;
+        }
+
+        p {
+            font-size: 1.1em;
+            text-align: justify;
+            margin: 15px 0;
+            color: #555;
+        }
+
+        .ar-button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 30px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .ar-button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+
+        #ar-container {
+            margin-top: 20px;
+            width: 100%;
+            height: 500px;
+        }
+        
+        /* Oculta los elementos AR por defecto */
+        #ar-container {
+            display: none;
+        }
+    </style>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
+</head>
+<body>
+    <div id="main-content">
+        <div id="info">
+            <div class="titulo-con-imagenes">
+                <img src="imagenes/medicina logo.png" alt="imagen izquierda">
+                <h1>Espermatogénesis</h1>
+                <img src="imagenes/univesidad logo.png" alt="imagen derecha">
+            </div>
+            <h2>Museo de embriología</h2>
+            <h3>Universidad Autónoma de Chihuahua</h3>
+            <p>La embriología es el estudio del desarrollo de un embrión desde la fecundación del óvulo hasta la octava semana de gestación...</p>
+            <p>Con esta aplicación usted podrá obtener una experiencia de realidad virtual donde podrá ver modelos 3D de la espermatogénesis</p>
+        </div>
+        
+        <button id="start-ar" class="ar-button">Iniciar Realidad Aumentada</button>
+    </div>
+
+    <div id="ar-container">
+        </div>
+
+    <script>
+        document.getElementById('start-ar').addEventListener('click', () => {
+            // Oculta el contenido principal y muestra el contenedor AR
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('ar-container').style.display = 'block';
+
+            // Crea la escena AR de forma dinámica
+            const scene = document.createElement('a-scene');
+            scene.setAttribute('embedded', '');
+            scene.setAttribute('arjs', 'sourceType: webcam;');
+            scene.setAttribute('id', 'ar-scene');
+
+            // Agrega el marcador
+            const marker = document.createElement('a-marker');
+            marker.setAttribute('preset', 'hiro');
+
+            // Agrega el modelo 3D animado
+            const model = document.createElement('a-entity');
+            model.setAttribute('gltf-model', 'https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models@master/2.0/BoxAnimated/glTF-Binary/BoxAnimated.glb');
+            model.setAttribute('scale', '1.5 1.5 1.5');
+            model.setAttribute('animation-mixer', '');
+
+            marker.appendChild(model);
+            scene.appendChild(marker);
+
+            // Agrega la cámara
+            const camera = document.createElement('a-entity');
+            camera.setAttribute('camera', '');
+            scene.appendChild(camera);
+
+            // Agrega el botón de salida de AR
+            const exitButton = document.createElement('button');
+            exitButton.textContent = 'Salir de Realidad Aumentada';
+            exitButton.id = 'exit-ar';
+            exitButton.classList.add('ar-button');
+
+            // Agrega la escena y el botón al contenedor
+            document.getElementById('ar-container').appendChild(scene);
+            document.getElementById('ar-container').appendChild(exitButton);
+
+            // Lógica para el botón de salida de AR
+            exitButton.addEventListener('click', () => {
+                const arScene = document.getElementById('ar-scene');
+                if (arScene) {
+                    arScene.parentNode.removeChild(arScene);
+                }
+                document.getElementById('main-content').style.display = 'flex';
+                document.getElementById('ar-container').style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
